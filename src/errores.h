@@ -1,0 +1,2 @@
+
+void imprimirError(int codigo);
