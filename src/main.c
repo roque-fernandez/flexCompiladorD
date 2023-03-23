@@ -9,7 +9,7 @@
 
 int main(){
 
-    abrirArchivo("demo.d");
+    abrirArchivo("regression.d");
 
     //inicializar tabla de simbolos y mostrarla por pantalla
     iniciarTabla();

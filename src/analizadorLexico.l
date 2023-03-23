@@ -62,7 +62,17 @@ STRING  (\"([^\\\"]|(\\.))*\")|(\'([^\\\']|(\\.))*\')
 {ESPACIADO}   /* Se ignora */
 {COMENTARIO_LINEA} /* Se ignora */
 {COMENTARIO_BLOQUE} /* Se ignora */
-
+{APERTURA_COMENTARIO_ANIDADO}   {contador++; BEGIN(COMENTARIO_ANIDADO);}
+     
+<COMENTARIO_ANIDADO>
+    {
+        {APERTURA_COMENTARIO_ANIDADO} contador++;
+        {CIERRE_COMENTARIO_ANIDADO}   {  contador--; if (!contador) BEGIN(INITIAL); }
+        "+"+           ; /* Line 11 */
+        [^/+\n]+       ; /* Line 12 */
+        [/]            ; /* Line 13 */
+        \n             ; /* Line 14 */
+    }
      
 {ID}        {return ID;}
 {STRING}    {return STRING;}
