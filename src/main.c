@@ -4,13 +4,12 @@
 
 #include "tablaSimbolos.h"
 #include "analizadorSintactico.h"
-#include "sistemaEntrada.h"
-#include "analizadorLexico.h"
+#include "lex.yy.h"
 
 
 int main(){
-    //dar comienzo al sistema de entrada
-    iniciarSistemaEntrada("regression.d");
+
+    abrirArchivo("demo.d");
 
     //inicializar tabla de simbolos y mostrarla por pantalla
     iniciarTabla();
@@ -21,6 +20,6 @@ int main(){
 
     //liberacion de memoria de la tabla y del sistema de entrada
     liberarTabla();
-    liberarSistemaEntrada();
+    cerrarArchivo();
     
 }

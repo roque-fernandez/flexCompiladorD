@@ -4,13 +4,14 @@
 #include "tablaSimbolos.h"
 #include "errores.h"
 %}
-%option noyywrap
+
+%option noyywrap yylineno header-file="lex.yy.h" noinput nounput
 
 /*SECCION DE EXPRESIONES REGULARES*/
 
 /* espaciado */
-DELIMITADOR    [\s\t\n\r]
-ESPACIADO    {DELIM}+
+DELIMITADOR    [ \t\n\r]
+ESPACIADO    {DELIMITADOR}+
 
 /* datos basicos */
 LETRA       [A-Za-z]
@@ -19,24 +20,24 @@ CERO_UNO    [01]
 
 /* comentarios */
 COMENTARIO_LINEA \/\/[^\n]*     
-COMENTARIO_BLOQUE \/\*(.|\n)*\*\/
-//comentarios anidados veremos mas tarde
+COMENTARIO_BLOQUE \/\*([^*]|(\*+[^*/]))*\*+\/
+/* comentarios anidados veremos mas tarde */
 
 /* ids de funciones y variables*/
 ID          ({LETRA}|\_)({LETRA}|{DIGITO}|\_)*
 
 /* numeros enteros*/
 DECIMALES   {DIGITO}(\_?{DIGITO})*
-BINARIOS    {BINARIO}(\_?{BINARIO})*
-//NUM_DECIMAL  {DIGITO}(\_?{DECIMALES})?
+BINARIOS    {CERO_UNO}(\_?{CERO_UNO})*
+/* NUM_DECIMAL  {DIGITO}(\_?{DECIMALES})? */
 NUM_BINARIO  0(b|B)\_?{BINARIOS}
 ENTERO  ({DECIMALES}|{NUM_BINARIO})
 
 /* numeros flotantes */
 EXPONENTE   (e|E)(\+|\-)?{DECIMALES}
 NUM_FLOTANTE1   {DECIMALES}\.{DECIMALES}?{EXPONENTE}?
-NUM_FLOTANTE2   {DECIMALES}{EXP_DECIMAL}
-NUM_FLOTANTE3   \.{DECIMALES}{EXP_DECIMAL}?
+NUM_FLOTANTE2   {DECIMALES}{EXPONENTE}
+NUM_FLOTANTE3   \.{DECIMALES}{EXPONENTE}?
 NUM_FLOTANTE    ({NUM_FLOTANTE1}|{NUM_FLOTANTE2}|{NUM_FLOTANTE3})
 
 /* operadores */
@@ -48,7 +49,7 @@ IGUAL_IGUAL     \=\=
 /* strings */
 STRING_COMILLA_SIMPLE   \`(.|\n)+\`
 STRING_COMILLA_DOBLE    \"(.|\n)+\"
-STRING  {STRING_COMILLA_SIMPLE}|{STRING_COMILLA_DOBLE}
+STRING  (\"([^\\\"]|(\\.))*\")|(\'([^\\\']|(\\.))*\')
 
 /*  DEFINIR LO QUE SE VA A RETORNAR EN CADA CASO*/
 %%
@@ -58,12 +59,11 @@ STRING  {STRING_COMILLA_SIMPLE}|{STRING_COMILLA_DOBLE}
 {ID}        {return ID;}
 {STRING}    {return STRING;}
 {OPERADOR}  {return (int) *yytext;}
-{MAS_MAS}   {retrurn MAS_MAS}
-{MAS_IGUAL}   {retrurn MAS_IGUAL}
-{IGUAL_IGUAL}   {retrurn IGUAL_IGUAL}
+{MAS_MAS}   {return MAS_MAS;}
+{MAS_IGUAL}   {return MAS_IGUAL;}
+{IGUAL_IGUAL}   {return IGUAL_IGUAL;}
 {ENTERO}    {return INT;}
 {NUM_FLOTANTE}     {return DOUBLE;}
-.           {imprimirError(4);}
 <<EOF>>     {yyterminate();}
 %%
 
@@ -78,7 +78,7 @@ void siguienteComponenteLexico(tipoelem *e){
         buscarElemento(e);
     }
     //caso de que se acabe el archivo se devuelve 0 pero hay que cambiar por el valor de EOF
-    }else if(e->valor == 0){
+    else if(e->valor == 0){
         e->valor = EOF_COMPONENT;
     }
 }

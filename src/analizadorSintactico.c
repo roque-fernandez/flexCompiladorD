@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "analizadorLexico.h"
+#include "lex.yy.h"
 #include "definiciones.h"
 
 void procesar(){
