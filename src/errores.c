@@ -19,7 +19,6 @@ void imprimirError(int codigo){
             break;
         case 4:
             printf(ROJO_T "\nError: Caracter desconocido\n");
-            exit(EXIT_FAILURE);
             break;
         case 5:
             printf(ROJO_T "\nError: Formato de exponente incorrecto\n");
