@@ -3,9 +3,12 @@
 #include "definiciones.h"
 #include "tablaSimbolos.h"
 #include "errores.h"
+
+/* contador para saber cuantos comentarios anidados hay abiertos*/
+int contador = 0;
 %}
 
-%option noyywrap yylineno header-file="lex.yy.h" noinput nounput
+%option noyywrap noinput nounput
 
 /*SECCION DE EXPRESIONES REGULARES*/
 
@@ -21,6 +24,9 @@ CERO_UNO    [01]
 /* comentarios */
 COMENTARIO_LINEA \/\/[^\n]*     
 COMENTARIO_BLOQUE \/\*([^*]|(\*+[^*/]))*\*+\/
+APERTURA_COMENTARIO_ANIDADO \/\+
+CIERRE_COMENTARIO_ANIDADO \+\/
+%x COMENTARIO_ANIDADO
 /* comentarios anidados veremos mas tarde */
 
 /* ids de funciones y variables*/
@@ -56,6 +62,8 @@ STRING  (\"([^\\\"]|(\\.))*\")|(\'([^\\\']|(\\.))*\')
 {ESPACIADO}   /* Se ignora */
 {COMENTARIO_LINEA} /* Se ignora */
 {COMENTARIO_BLOQUE} /* Se ignora */
+
+     
 {ID}        {return ID;}
 {STRING}    {return STRING;}
 {OPERADOR}  {return (int) *yytext;}
