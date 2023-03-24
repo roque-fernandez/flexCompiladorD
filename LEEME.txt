@@ -1,11 +1,13 @@
-Compilador de lenguaje D escrito en C.
+Compilador de lenguaje D escrito en C usando Flex. 
 
-Para compilar el programa, se debe usar el comando "make" en el directorio principal del proyecto. El ejecutable se encontrará dentro de la carpeta "build".
-
+Para compilar se ha usado Windows Subsystem for Linux2.
 Para ejecutar correctamente el orden de comando sería:
 
 1. Moverse a la carpeta base del proyecto
-2. make
+2. make clean
+3. make flex
+4. make -Wall
 3. ./build/final_program
 
+El ejecutable se encontrará dentro de la carpeta "build".
 El fichero regression.d debería encontrarse en el directorio base del proyecto para que el programa lo detecte correctamente.
